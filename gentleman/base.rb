@@ -1,44 +1,40 @@
 module Gentleman
   class Base
 
-    @@actions = {}
-    @@handlers = {}
+    $user = ENV['GENTLEMAN_USER'] || 'Sir'
+    $console = ::Gentleman::Console.new
+    @@selectors = []
 
-    attr_reader :entry, :action, :target, :handler
-
-    def self.register_action(action, class_name)
-      @@actions[action] = class_name
+    def self.register_selector(klass:, actions:)
+      @@selectors << {
+        klass: klass,
+        actions: actions
+      }
     end
 
-    def self.register_handler(handler, class_name)
-      @@handlers[handler] = class_name
-    end
+    register_selector klass: ::Gentleman::Selectors::Search,
+      actions: [
+        Actions::List,
+        Actions::Move,
+        Actions::Rename,
+        Actions::Delete
+      ]
 
-    register_action :search, 'Search'
-    register_action :delete, 'Delete'
-    register_handler :list, 'List'
-    register_handler :count, 'Count'
+    register_selector klass: ::Gentleman::Selectors::Where, actions: []
 
-    def initialize(entry)
-      @entry = Gentleman::Entry.new(entry, @@actions, @@handlers)
+    attr_reader :user_input
+    def initialize(entries)
+      @user_input = ::Gentleman::UserInput.new(entries, @@selectors)
     end
 
     def execute
-      if @entry.valid?
-        handle_response(lookup_target)
+      return user_input.execute if user_input.valid?
+
+      if user_input.entry.empty?
+        $console.say "Yes, #{$user}!"
       else
-        'Sorry Sir, I could not understand you.'
+        $console.say "Sorry #{$user}, I could not understand you."
       end
-    end
-
-    private
-
-    def lookup_target
-      Gentleman::Action.const_get(@@actions[@entry.action]).handle(@entry.target)
-    end
-
-    def handle_response(files)
-      Gentleman::Handler.const_get(@@handlers[@entry.handler]).handle(files)
     end
 
   end

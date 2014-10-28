@@ -1,10 +1,9 @@
-require_relative 'gentleman/base'
-require_relative 'gentleman/entry'
-require_relative 'gentleman/action/search'
-require_relative 'gentleman/handler/list'
-require_relative 'gentleman/handler/count'
+require_relative './gentleman/helpers'
+require_relative './gentleman/selectors/selector'
+require_relative './gentleman/actions/action'
+require_relative './gentleman/console'
+require_relative './gentleman/base'
+require_relative './gentleman/user_input'
 
 module Gentleman
 end
-
-puts Gentleman::Base.new(ARGV[0]).execute unless defined?(Rspec)

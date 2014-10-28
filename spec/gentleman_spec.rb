@@ -3,9 +3,11 @@ require 'rspec/autorun'
 
 require_relative '../gentleman/base'
 require_relative '../gentleman/entry'
-require_relative '../gentleman/action/search'
-require_relative '../gentleman/handler/list'
-require_relative '../gentleman/handler/count'
+require_relative '../gentleman/actions/action'
+require_relative '../gentleman/actions/search'
+require_relative '../gentleman/responders/responder'
+require_relative '../gentleman/responders/list'
+require_relative '../gentleman/responders/count'
 
 describe Gentleman do
 
